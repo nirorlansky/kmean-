@@ -1,3 +1,83 @@
+#define PY_SSIZE_T_CLEAN
+#include <Python.h>
+
+centroid* compute_centroids(vector* vectors, long K, long iter, double epsilon, centroid* centroids){
+    struct vector* iter_vec;
+    struct centroid* curr_centroid;
+    struct centroid* closest_centroid;
+    int changed, i;
+    for (i = 0; i < iter; i++)
+    {
+        changed = 0;
+        iter_vec = vectors;
+        curr_centroid = centroids;
+        while (iter_vec != NULL)
+        {
+            closest_centroid = find_min_dist(centroids, iter_vec->cords);
+            closest_centroid->group_size++;
+            add_vector_to_centroid_sum(closest_centroid->sum, iter_vec->cords);
+            iter_vec = iter_vec->next;
+        }
+        while(curr_centroid != NULL){
+            if(curr_centroid->group_size != 0){
+                comupte_avg(curr_centroid->sum, curr_centroid->group_size);
+                if(find_distance(curr_centroid->sum, curr_centroid->cords) > epsilon){
+                    changed = 1;
+                }
+                copy_cords(curr_centroid->sum, curr_centroid->cords);
+                sum_to_zeros(curr_centroid->sum);
+                curr_centroid->group_size = 0;
+            }
+            curr_centroid = curr_centroid->next;
+        }
+        if(changed == 0){
+            return centroids;
+        }
+    }
+    return centroids; 
+}
+
+
+
+static PyObject* fit(PyObject* self, PyObject* args){
+    vector* vectors;
+    long K;
+    long iter;
+    double epsilon;
+    centroid* centroids;
+
+    if(!PyArg_ParseTuple(args, "lld", &K, &iter, &epsilon)){    
+        return NULL;
+    }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #define _GNU_SOURCE
 
 #include <stdio.h>
@@ -266,42 +346,7 @@ void free_memory(vector* vectors, centroid* centroids){
 }
 
 
-centroid* compute_centroids(vector* vectors, long K, long iter, double epsilon){
-    struct centroid* centroids = initial_centroids(vectors, K);
-    struct vector* iter_vec;
-    struct centroid* curr_centroid;
-    struct centroid* closest_centroid;
-    int changed, i;
-    for (i = 0; i < iter; i++)
-    {
-        changed = 0;
-        iter_vec = vectors;
-        curr_centroid = centroids;
-        while (iter_vec != NULL)
-        {
-            closest_centroid = find_min_dist(centroids, iter_vec->cords);
-            closest_centroid->group_size++;
-            add_vector_to_centroid_sum(closest_centroid->sum, iter_vec->cords);
-            iter_vec = iter_vec->next;
-        }
-        while(curr_centroid != NULL){
-            if(curr_centroid->group_size != 0){
-                comupte_avg(curr_centroid->sum, curr_centroid->group_size);
-                if(find_distance(curr_centroid->sum, curr_centroid->cords) > epsilon){
-                    changed = 1;
-                }
-                copy_cords(curr_centroid->sum, curr_centroid->cords);
-                sum_to_zeros(curr_centroid->sum);
-                curr_centroid->group_size = 0;
-            }
-            curr_centroid = curr_centroid->next;
-        }
-        if(changed == 0){
-            return centroids;
-        }
-    }
-    return centroids; 
-}
+
 
 int main(int argc, char **argv){
     long K;
