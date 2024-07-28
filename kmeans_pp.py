@@ -91,14 +91,15 @@ def kmeans_pp(K, eps, data1, data2, iter = 300):
     vectors = list(vectors)
     vectors = [list(vector) for vector in vectors]
     centroids = [vectors[i].copy() for i in centroids_index]
-
+    
+    # mk.fit(K, iter, eps, vectors, centroids)
     l = mk.fit(K, iter, eps, vectors, centroids)
+    print("python:")
     print(l)
-
-    # Print the initial centroids
-    print("Initial centroids:")
-    for centroid in centroids:
-        print(centroid)
+    # # print(type(l))
+    # for i in range(K):
+    #     print(*l[i], sep=",")
+    
 
 
 
