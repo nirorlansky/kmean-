@@ -169,98 +169,40 @@ static PyObject* fit(PyObject* self, PyObject* args){
     PyObject* centroids;
     struct vector* vectors_list;
     struct centroid* centroids_list;
-    struct centroid* centroids_iter;
-    // struct cord* cords;
     
     long K;
     long iter;
     double epsilon;
-    // int i;
     double** matrix;
-    // int j;
-    // double res;
-    
+    int i, j;
 
     if(!PyArg_ParseTuple(args, "lldOO", &K, &iter, &epsilon, &vectors, &centroids)){    
         return NULL;
     }
-    // double **return_list = (double **)malloc(K * sizeof(double *));
-    // for (int i = 0; i < K; i++) {
-    //     return_list[i] = (double *)malloc(d * sizeof(double));
-    // }
+ 
     vectors_list = file_to_vectors(vectors);
     centroids_list = file_to_centroids(centroids);
     
     centroids_list = compute_centroids(vectors_list, K, iter, epsilon, centroids_list);
     matrix = centroids_to_matrix(centroids_list, K, d);
-    
-    // centroids_iter = centroids_list;
-    // while (centroids_iter != NULL){
-    //     print_vector(centroids_iter->cords);
-    //     centroids_iter = centroids_iter->next;
-    // }
 
     PyObject* py_matrix = PyList_New(K);
-    for (int i = 0; i < K; i++) {
+    for (i= 0; i < K; i++) {
         PyObject* row = PyList_New(d);
-        for (int j = 0; j < d; j++) {
+        for (j = 0; j < d; j++) {
+            if (i == 3 && j == 4) {
+                printf("%f\n", matrix[i][j]);
+            }
             PyList_SetItem(row, j, PyFloat_FromDouble(matrix[i][j]));
         }
         PyList_SetItem(py_matrix, i, row);
     }
 
-    // centroids_iter = centroids_list;
-    // for (i = 0; i < K; i++)
-    // {
-    //     cords = centroids_iter->cords;
-    //     for (j = 0; j < d; j++)
-    //     {
-    //         res = roundl(cords->value*10000.0L)/10000.0L;
-    //         return_list[i][j] = res;
-    //         cords = cords->next;
-    //     }
-    //     centroids_iter = centroids_iter->next;
-    // }
-
-    // return_list[0][0] = centroids_iter->cords->value;
-    // return_list[0][1] = centroids_iter->cords->next->value;
-    // return_list[0][2] = centroids_iter->cords->next->next->value;
-    // return_list[0][3] = centroids_iter->cords->next->next->next->value;
-
-    // return_list[1][0] = centroids_iter->next->cords->value;
-    // return_list[1][1] = centroids_iter->next->cords->next->value;
-    // return_list[1][2] = centroids_iter->next->cords->next->next->value;
-    // return_list[1][3] = centroids_iter->next->cords->next->next->next->value;
-
-    // return_list[2][0] = centroids_iter->next->next->cords->value;
-    // return_list[2][1] = centroids_iter->next->next->cords->next->value;
-    // return_list[2][2] = centroids_iter->next->next->cords->next->next->value;
-    // return_list[2][3] = centroids_iter->next->next->cords->next->next->next->value;
-
-
-
-
-    // PyObject* Py_Mat = PyList_New(K);
-    // for (i=0; i<PyList_Size(Py_Mat); i++){
-    //     PyList_SetItem(Py_Mat, i, c_to_py_list(return_list[i]));
-    // }
-
-    printf("\n\ngetting here");
     free_memory(vectors_list, centroids_list);
     free_matrix(matrix, K);
     return py_matrix;
-    // return Py_Mat;
 }
 
-// static PyObject* c_to_py_list(double *c_list){
-//     int i;
-//     PyObject* Py_List = PyList_New(d);
-//     for (i = 0; i < d; i++)
-//     {
-//         PyList_SetItem(Py_List, i, PyFloat_FromDouble(c_list[i]));
-//     }
-//     return Py_List;
-// }
 
 double** centroids_to_matrix(centroid* centroids, int K, int d) {
     double** matrix = (double**)malloc(K * sizeof(double*));

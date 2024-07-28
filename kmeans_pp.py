@@ -27,7 +27,6 @@ def validate_iter(iter):
         return False
     return int(iter) == iter and 1000 > iter > 1
 
-
 def validate_input_data(input_data):
     return input_data.endswith(".txt") or input_data.endswith(".csv")
 
@@ -80,6 +79,17 @@ def initial_k_centroids(data, k):
         centroids.append(np.random.choice(len(data), p=dists))
     return centroids
 
+def round_four_digits(num):
+    # receive only floats
+    num = round(num, 4)
+    num = str(num)
+    parts = num.split(".")
+    if len(parts) != 2:
+        print(ERROR_MESSAGE)
+        return
+    zeros = "0" * (4 - len(parts[1]))
+    num = ".".join([parts[0], parts[1] + zeros])
+    return num
 
 def kmeans_pp(K, eps, data1, data2, iter = 300):
     K, eps, vectors, iter = validate_args(K, eps, data1, data2, iter)
@@ -92,15 +102,10 @@ def kmeans_pp(K, eps, data1, data2, iter = 300):
     vectors = [list(vector) for vector in vectors]
     centroids = [vectors[i].copy() for i in centroids_index]
     
-    # mk.fit(K, iter, eps, vectors, centroids)
-    l = mk.fit(K, iter, eps, vectors, centroids)
-    print("python:")
-    print(l)
-    # # print(type(l))
-    # for i in range(K):
-    #     print(*l[i], sep=",")
+    final_centroids = mk.fit(K, iter, eps, vectors, centroids)
+    for i in range(K):
+        print(",".join([round_four_digits(num) for num in final_centroids[i]]))
     
-
 
 
 if __name__ == '__main__':
