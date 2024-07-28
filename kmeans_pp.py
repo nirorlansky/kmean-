@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import sys
+import mykmeanssp as mk ;
 
 ERROR_MESSAGE = "An Error Has Occurred"
 np.random.seed(1234)
@@ -81,10 +82,18 @@ def initial_k_centroids(data, k):
 
 
 def kmeans_pp(K, eps, data1, data2, iter = 300):
-    K, eps, data, iter = validate_args(K, eps, data1, data2, iter)
+    K, eps, vectors, iter = validate_args(K, eps, data1, data2, iter)
     if K == 0:
         return
-    centroids = initial_k_centroids(data, K)
+    centroids_index = initial_k_centroids(vectors, K)
+    print(*centroids_index, sep=",")
+
+    vectors = list(vectors)
+    vectors = [list(vector) for vector in vectors]
+    centroids = [vectors[i].copy() for i in centroids_index]
+
+    l = mk.fit(K, iter, eps, vectors, centroids)
+    print(l)
 
     # Print the initial centroids
     print("Initial centroids:")
