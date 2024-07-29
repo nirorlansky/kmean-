@@ -46,8 +46,6 @@ centroid* file_to_centroids(PyObject* centroids);
 double find_distance(cord* centroid, cord* vec);
 void copy_cords(cord* from, cord* to);
 cord* create_zeros_vector();
-void print_vector(cord* cord);
-// static PyObject* c_to_py_list(double c_list[]);
 void free_matrix(double** matrix, int K);
 double** centroids_to_matrix(centroid* centroids, int K, int d);
 
@@ -190,9 +188,6 @@ static PyObject* fit(PyObject* self, PyObject* args){
     for (i= 0; i < K; i++) {
         PyObject* row = PyList_New(d);
         for (j = 0; j < d; j++) {
-            if (i == 3 && j == 4) {
-                printf("%f\n", matrix[i][j]);
-            }
             PyList_SetItem(row, j, PyFloat_FromDouble(matrix[i][j]));
         }
         PyList_SetItem(py_matrix, i, row);
@@ -202,7 +197,6 @@ static PyObject* fit(PyObject* self, PyObject* args){
     free_matrix(matrix, K);
     return py_matrix;
 }
-
 
 double** centroids_to_matrix(centroid* centroids, int K, int d) {
     double** matrix = (double**)malloc(K * sizeof(double*));
@@ -345,20 +339,6 @@ PyMODINIT_FUNC PyInit_mykmeanssp(void){
     return m;
 }
 
-
-void print_vector(cord* cord){
-    while(cord != NULL){
-        printf("%.4f", cord->value);
-        cord = cord->next;
-        if(cord != NULL){
-            printf(",");
-        }
-    }
-    printf("\n");
-}
-
-
-
 double find_distance(cord* centroid, cord* vec){
     double sum = 0;
     while(centroid != NULL && vec != NULL){
@@ -368,8 +348,6 @@ double find_distance(cord* centroid, cord* vec){
     }
     return sqrt(sum);
 }
-
-
 
 void copy_cords(cord* from, cord* to){
     while(from != NULL && to != NULL){
@@ -398,22 +376,3 @@ cord* create_zeros_vector(){
     }
     return head;
 }
-
-
-
-
-// int main(int argc, char **argv){
-//     long K;
-//     long iter;
-//     struct vector* vectors;
-//     struct centroid* centroids, *centroids_iter;
-//     vectors = file_to_vectors();
-//     centroids = compute_centroids(vectors, K, iter, 0.001);
-//     centroids_iter = centroids;
-//     while (centroids_iter != NULL){
-//         print_vector(centroids_iter->cords);
-//         centroids_iter = centroids_iter->next;
-//     }
-//     free_memory(vectors, centroids);
-//     return 0;
-// }

@@ -64,7 +64,6 @@ def extract_data(data1, data2):
     return data
 
 def initial_k_centroids(data, k):
-
     centroids = []
     centroids.append(np.random.choice(len(data)))
     for i in range(1, k):
@@ -106,7 +105,6 @@ def kmeans_pp(K, eps, data1, data2, iter = 300):
     for i in range(K):
         print(",".join([round_four_digits(num) for num in final_centroids[i]]))
     
-
 
 if __name__ == '__main__':
     if len(sys.argv) == 5:
