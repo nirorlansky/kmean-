@@ -51,6 +51,9 @@ double** centroids_to_matrix(centroid* centroids, int K, int d);
 
 
 centroid* find_min_dist(centroid* centroids, cord* cords){
+    /*
+    find the centroid with the minimum distance from the given vector
+    */
     struct centroid* min_cent;
     double min_dist = -1;
     double curr_dist;
@@ -69,6 +72,9 @@ centroid* find_min_dist(centroid* centroids, cord* cords){
 }
 
 void add_vector_to_centroid_sum(cord* sum, cord* vec){
+    /*
+    add the vector to the sum of the centroid.
+    */
     while (sum != NULL && vec != NULL)
     {
         sum->value += vec->value;
@@ -78,6 +84,9 @@ void add_vector_to_centroid_sum(cord* sum, cord* vec){
 }
 
 void comupte_avg(cord* sum, int size){
+    /*
+    compute the average of the sum of the centroid.
+    */
     while (sum != NULL)
     {
         sum->value = sum->value/size;
@@ -86,6 +95,9 @@ void comupte_avg(cord* sum, int size){
 }
 
 void sum_to_zeros(cord* sum){
+    /*
+    set the sum of the centroid to zeros.
+    */
     while(sum!= NULL){
         sum->value = 0;
         sum = sum->next;
@@ -93,6 +105,9 @@ void sum_to_zeros(cord* sum){
 }
 
 void free_cords(cord* cords){
+    /*
+    free the memory of the cords.
+    */
     cord* next_cord;
     while(cords != NULL){
         next_cord = cords->next;
@@ -102,6 +117,9 @@ void free_cords(cord* cords){
 }
 
 void free_memory(vector* vectors, centroid* centroids){
+    /*
+    free the memory of the vectors and the centroids.
+    */
     centroid* next_cent;
     vector* next_vec;
     while(centroids != NULL){
@@ -120,6 +138,9 @@ void free_memory(vector* vectors, centroid* centroids){
 }
 
 centroid* compute_centroids(vector* vectors, long K, long iter, double epsilon, centroid* centroids){
+    /*
+    compute the centroids according to given vectors and initial centroids.
+    */
     struct vector* iter_vec;
     struct centroid* curr_centroid;
     struct centroid* closest_centroid;
@@ -156,6 +177,9 @@ centroid* compute_centroids(vector* vectors, long K, long iter, double epsilon, 
 }
 
 void free_matrix(double** matrix, int K) {
+    /*
+    free the memory of the matrix.
+    */
     for (int i = 0; i < K; i++) {
         free(matrix[i]);
     }
@@ -163,6 +187,12 @@ void free_matrix(double** matrix, int K) {
 }
 
 static PyObject* fit(PyObject* self, PyObject* args){
+    /*
+    the function that is called from python.
+    recieves long K, long iter, double epsilon,
+    PyObject vectors and PyObject centroids - both list of lists of floats.
+    returns the centroids after they computed as list of lists of floats.
+    */
     PyObject* vectors;
     PyObject* centroids;
     struct vector* vectors_list;
@@ -199,6 +229,9 @@ static PyObject* fit(PyObject* self, PyObject* args){
 }
 
 double** centroids_to_matrix(centroid* centroids, int K, int d) {
+    /*
+    convert the centroids to a matrix.
+    */
     double** matrix = (double**)malloc(K * sizeof(double*));
     if (!matrix) {
         printf(ERROR_MESSAGE);
@@ -231,6 +264,9 @@ double** centroids_to_matrix(centroid* centroids, int K, int d) {
 }
 
 cord* line_to_cord(PyObject* line){
+    /*
+    convert a list of python floats to a cord linked list.
+    */
     struct cord* head_cord;
     struct cord* curr_cord;
     int i;
@@ -255,6 +291,9 @@ cord* line_to_cord(PyObject* line){
 }
 
 vector* file_to_vectors(PyObject* vectors) {
+    /*
+    convert a list of lists of python floats to a vector linked list.
+    */
     struct vector* head_vector;
     struct vector* curr_vector;
     PyObject* vec;
@@ -283,6 +322,9 @@ vector* file_to_vectors(PyObject* vectors) {
 }
 
 centroid* file_to_centroids(PyObject* centroids) {
+    /*
+    convert a list of lists of python floats to a centroid linked list.
+    */
     struct centroid* head_centroid;
     struct centroid* curr_centroid;
     PyObject* cent;
@@ -340,6 +382,9 @@ PyMODINIT_FUNC PyInit_mykmeanssp(void){
 }
 
 double find_distance(cord* centroid, cord* vec){
+    /*
+    find the distance between two vectors (given as cords structs, used for centroids and vectors).
+    */
     double sum = 0;
     while(centroid != NULL && vec != NULL){
         sum += pow(centroid->value - vec->value, 2);
@@ -350,6 +395,9 @@ double find_distance(cord* centroid, cord* vec){
 }
 
 void copy_cords(cord* from, cord* to){
+    /*
+    copy the values of the cords from one cord to another.
+    */
     while(from != NULL && to != NULL){
         to->value = from->value;
         from = from->next;
@@ -358,6 +406,9 @@ void copy_cords(cord* from, cord* to){
 }
 
 cord* create_zeros_vector(){
+    /*
+    create a vector of zeros.
+    */
     struct cord* zeros;
     struct cord* head;
     int j;
